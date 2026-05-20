@@ -44,8 +44,8 @@
           </div>
           <div class="col-4 metric-box">
             <div class="metric-label">Vento</div>
-            <div class="metric-value" style="font-size:20px">14 km/h</div>
-            <div class="metric-unit">lateral</div>
+            <div id="frota-wind-value" class="metric-value" style="font-size:20px">14 km/h</div>
+            <div id="frota-wind-direction" class="metric-unit">lateral</div>
           </div>
         </div>
       </div>
@@ -70,10 +70,15 @@
     <div class="container-app py-3">
 
       <!-- Search -->
-      <div class="input-search-wrap mb-4">
+      <div class="input-search-wrap mb-2">
         <i class="bi bi-search input-icon"></i>
-        <input type="text" class="input-search" placeholder="Definir destino…" />
+        <input id="destination-input" type="text" class="input-search" placeholder="Definir destino…" />
       </div>
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <button id="btn-weather-destination" class="btn btn-sm btn-outline-primary" type="button">Atualizar meteo</button>
+        <small id="weather-status" class="text-secondary-custom">A obter localizacao atual...</small>
+      </div>
+      <p id="weather-location" class="text-secondary-custom mb-3"></p>
 
       <!-- Map -->
       <div class="map-placeholder map-medium mb-4">
@@ -84,18 +89,18 @@
       <div class="d-flex gap-2 mb-4">
         <div class="weather-card flex-fill">
           <i class="bi bi-wind weather-icon"></i>
-          <div class="weather-value">12</div>
-          <div class="weather-unit">km/h</div>
+          <div id="weather-wind-value" class="weather-value">12</div>
+          <div id="weather-wind-unit" class="weather-unit">km/h</div>
         </div>
         <div class="weather-card flex-fill">
           <i class="bi bi-cloud-rain weather-icon"></i>
-          <div class="weather-value">0%</div>
-          <div class="weather-unit">chuva</div>
+          <div id="weather-rain-value" class="weather-value">0%</div>
+          <div id="weather-rain-unit" class="weather-unit">chuva</div>
         </div>
         <div class="weather-card flex-fill">
           <i class="bi bi-eye weather-icon"></i>
-          <div class="weather-value">8</div>
-          <div class="weather-unit">km vis.</div>
+          <div id="weather-visibility-value" class="weather-value">8</div>
+          <div id="weather-visibility-unit" class="weather-unit">km vis.</div>
         </div>
       </div>
 
@@ -103,15 +108,15 @@
       <div class="gauge-wrap mb-4">
         <svg viewBox="0 0 120 120" width="120" height="120">
           <circle cx="60" cy="60" r="52" fill="none" stroke="#E5E5E7" stroke-width="8"/>
-          <circle cx="60" cy="60" r="52" fill="none" stroke="#007AFF" stroke-width="8"
+          <circle id="autonomy-ring" cx="60" cy="60" r="52" fill="none" stroke="#007AFF" stroke-width="8"
             stroke-dasharray="245" stroke-dashoffset="80"
             stroke-linecap="round" transform="rotate(-90 60 60)"/>
         </svg>
         <div class="gauge-label-wrap">
-          <div class="gauge-value">27</div>
+          <div id="autonomy-value" class="gauge-value">27</div>
           <div class="gauge-unit">min</div>
         </div>
-        <div class="gauge-caption">Autonomia estimada</div>
+        <div id="autonomy-caption" class="gauge-caption">Autonomia estimada</div>
       </div>
 
       <!-- Route Cards -->
@@ -166,11 +171,11 @@
       <!-- Wind indicator -->
       <div class="wind-overlay">
         <i class="bi bi-wind" style="color:#007AFF;font-size:18px"></i>
-        <span class="fw-semibold ms-1">14 km/h</span>
+        <span id="voo-wind-overlay" class="fw-semibold ms-1">14 km/h</span>
       </div>
 
       <!-- Alert Banner -->
-      <div class="alert-banner">
+      <div id="flight-alert-banner" class="alert-banner">
         <i class="bi bi-exclamation-triangle-fill me-2"></i>
         Vento lateral forte — reduzir para 22 km/h
       </div>
@@ -204,7 +209,7 @@
         </div>
         <div class="col-6 metric-box metric-box-large">
           <div class="metric-label">Velocidade</div>
-          <div class="metric-value">28</div>
+          <div id="voo-speed-value" class="metric-value">28</div>
           <div class="metric-unit">km/h</div>
         </div>
         <div class="col-6 metric-box metric-box-large">
