@@ -79,7 +79,10 @@
         <input id="destination-input" type="text" class="input-search" placeholder="Destino (ex: Braga)" />
       </div>
       <div class="d-flex justify-content-between align-items-center mb-4">
-        <button id="btn-calculate-route" class="btn btn-sm btn-outline-primary" type="button">Calcular rota</button>
+        <div class="d-flex gap-2">
+          <button id="btn-use-current-location" class="btn btn-sm btn-outline-secondary" type="button">Usar localizacao atual</button>
+          <button id="btn-calculate-route" class="btn btn-sm btn-outline-primary" type="button">Calcular rota</button>
+        </div>
         <small id="weather-status" class="text-secondary-custom">A obter localizacao atual...</small>
       </div>
       <p id="weather-location" class="text-secondary-custom mb-3"></p>

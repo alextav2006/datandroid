@@ -9,6 +9,7 @@ var screenTabMap = {
 
 var WEATHER_API_BASE = 'https://api.open-meteo.com/v1/forecast';
 var GEOCODING_API_BASE = 'https://geocoding-api.open-meteo.com/v1/search';
+var REVERSE_GEOCODING_API_BASE = 'https://geocoding-api.open-meteo.com/v1/reverse';
 var ROUTING_API_BASE = 'https://router.project-osrm.org/route/v1/driving';
 
 var elements = {
@@ -30,6 +31,7 @@ var elements = {
   autonomyValue: null,
   autonomyRing: null,
   autonomyCaption: null,
+  useCurrentLocationBtn: null,
   calculateRouteBtn: null,
   routeFastestTitle: null,
   routeFastestDistance: null,
@@ -352,6 +354,60 @@ function buildWeatherUrl(lat, lon) {
   return WEATHER_API_BASE + '?' + params.join('&');
 }
 
+function geolocationErrorMessage(error) {
+  if (!error) return 'Nao foi possivel obter localizacao.';
+  if (error.code === 1) return 'Permissao de localizacao negada no browser.';
+  if (error.code === 2) return 'Localizacao indisponivel neste dispositivo.';
+  if (error.code === 3) return 'Tempo de espera da localizacao excedido.';
+  return 'Erro de geolocalizacao: ' + (error.message || 'desconhecido');
+}
+
+function getCurrentPositionPromise(options) {
+  return new Promise(function(resolve, reject) {
+    navigator.geolocation.getCurrentPosition(resolve, reject, options);
+  });
+}
+
+function reverseGeocodeCoords(lat, lon) {
+  var url = REVERSE_GEOCODING_API_BASE
+    + '?latitude=' + encodeURIComponent(lat)
+    + '&longitude=' + encodeURIComponent(lon)
+    + '&language=pt&format=json';
+
+  return fetch(url)
+    .then(function(response) {
+      if (!response.ok) throw new Error('Falha na geocodificacao inversa');
+      return response.json();
+    })
+    .then(function(data) {
+      if (!data || !data.results || data.results.length === 0) return null;
+      return data.results[0];
+    })
+    .catch(function() {
+      return null;
+    });
+}
+
+function usePositionData(position, initiatedByUser) {
+  var lat = position.coords.latitude;
+  var lon = position.coords.longitude;
+
+  return reverseGeocodeCoords(lat, lon)
+    .then(function(place) {
+      var label = 'Posicao atual';
+      if (place) {
+        label = place.name;
+        if (place.admin1) label += ', ' + place.admin1;
+        if (elements.originInput && (!elements.originInput.value || initiatedByUser)) {
+          elements.originInput.value = place.name;
+        }
+      } else if (elements.originInput && (!elements.originInput.value || initiatedByUser)) {
+        elements.originInput.value = roundNumber(lat, 5) + ', ' + roundNumber(lon, 5);
+      }
+      return fetchWeatherByCoords(lat, lon, label);
+    });
+}
+
 function fetchWeatherDataByCoords(lat, lon) {
   return fetch(buildWeatherUrl(lat, lon))
     .then(function(response) {
@@ -378,22 +434,61 @@ function fetchWeatherByCoords(lat, lon, label) {
     });
 }
 
-function geocodeDestination(query) {
-  var url = GEOCODING_API_BASE
-    + '?name=' + encodeURIComponent(query)
-    + '&count=1&language=pt&format=json';
+function parseLatLonInput(text) {
+  if (!text) return null;
+  var match = String(text).trim().match(/^(-?\d+(?:\.\d+)?)\s*[,;]\s*(-?\d+(?:\.\d+)?)$/);
+  if (!match) return null;
 
-  return fetch(url)
-    .then(function(response) {
-      if (!response.ok) throw new Error('Falha na geocodificacao');
-      return response.json();
+  var lat = parseFloat(match[1]);
+  var lon = parseFloat(match[2]);
+  if (isNaN(lat) || isNaN(lon)) return null;
+  if (lat < -90 || lat > 90 || lon < -180 || lon > 180) return null;
+
+  return {
+    name: roundNumber(lat, 5) + ', ' + roundNumber(lon, 5),
+    latitude: lat,
+    longitude: lon
+  };
+}
+
+function geocodeDestination(query, fieldName) {
+  var urlPt = GEOCODING_API_BASE
+    + '?name=' + encodeURIComponent(query)
+    + '&count=5&language=pt&format=json';
+
+  var urlFallback = GEOCODING_API_BASE
+    + '?name=' + encodeURIComponent(query)
+    + '&count=5&format=json';
+
+  function fetchAndPick(url) {
+    return fetch(url)
+      .then(function(response) {
+        if (!response.ok) throw new Error('Falha na geocodificacao');
+        return response.json();
+      })
+      .then(function(data) {
+        if (!data || !data.results || data.results.length === 0) return null;
+        return data.results[0];
+      });
+  }
+
+  return fetchAndPick(urlPt)
+    .then(function(result) {
+      if (result) return result;
+      return fetchAndPick(urlFallback);
     })
-    .then(function(data) {
-      if (!data || !data.results || data.results.length === 0) {
-        throw new Error('Destino nao encontrado');
+    .then(function(result) {
+      if (!result) {
+        throw new Error((fieldName || 'Local') + ' nao encontrado');
       }
-      return data.results[0];
+      return result;
     });
+}
+
+function resolvePlaceInput(text, fieldName) {
+  var coords = parseLatLonInput(text);
+  if (coords) return Promise.resolve(coords);
+  return geocodeDestination(text, fieldName);
 }
 
 function fetchRouteAlternatives(origin, destination) {
@@ -428,7 +523,10 @@ function calculateRouteFromInputs() {
 
   setStatus('A calcular rota e condicoes de voo...', false);
 
-  Promise.all([geocodeDestination(originText), geocodeDestination(destinationText)])
+  Promise.all([
+    resolvePlaceInput(originText, 'Origem'),
+    resolvePlaceInput(destinationText, 'Destino')
+  ])
     .then(function(places) {
       var origin = places[0];
       var destination = places[1];
@@ -457,25 +555,42 @@ function calculateRouteFromInputs() {
     });
 }
 
-function fetchWeatherFromCurrentLocation() {
+function fetchWeatherFromCurrentLocation(initiatedByUser) {
   if (!navigator.geolocation) {
     setStatus('Geolocalizacao indisponivel. Usa um destino manual.', true);
     return;
   }
 
+  if (!window.isSecureContext) {
+    setStatus('Geolocalizacao requer HTTPS ou localhost. Usa origem manual.', true);
+    return;
+  }
+
+  if (navigator.permissions && navigator.permissions.query) {
+    navigator.permissions.query({ name: 'geolocation' }).then(function(result) {
+      if (result.state === 'denied') {
+        setStatus('Permissao bloqueada no browser. Ativa nas definicoes do site.', true);
+      }
+    }).catch(function() {
+      // Sem impacto funcional; segue para tentativa normal.
+    });
+  }
+
   setStatus('A obter geolocalizacao...', false);
-  navigator.geolocation.getCurrentPosition(
-    function(position) {
-      var lat = position.coords.latitude;
-      var lon = position.coords.longitude;
-      var label = 'Posicao atual';
-      fetchWeatherByCoords(lat, lon, label);
-    },
-    function() {
-      setStatus('Sem permissao de localizacao. Usa um destino manual.', true);
-    },
-    { timeout: 8000, enableHighAccuracy: true }
-  );
+
+  getCurrentPositionPromise({ timeout: 7000, enableHighAccuracy: true, maximumAge: 0 })
+    .catch(function(firstError) {
+      return getCurrentPositionPromise({ timeout: 14000, enableHighAccuracy: false, maximumAge: 300000 })
+        .catch(function() {
+          throw firstError;
+        });
+    })
+    .then(function(position) {
+      return usePositionData(position, !!initiatedByUser);
+    })
+    .catch(function(error) {
+      setStatus(geolocationErrorMessage(error) + ' Usa origem manual.', true);
+    });
 }
 
 document.addEventListener('DOMContentLoaded', function() {
@@ -497,7 +612,14 @@ document.addEventListener('DOMContentLoaded', function() {
   elements.autonomyValue = document.getElementById('autonomy-value');
   elements.autonomyRing = document.getElementById('autonomy-ring');
   elements.autonomyCaption = document.getElementById('autonomy-caption');
+  elements.useCurrentLocationBtn = document.getElementById('btn-use-current-location');
   elements.calculateRouteBtn = document.getElementById('btn-calculate-route');
+    if (elements.useCurrentLocationBtn) {
+      elements.useCurrentLocationBtn.addEventListener('click', function() {
+        fetchWeatherFromCurrentLocation(true);
+      });
+    }
+
   elements.routeFastestTitle = document.getElementById('route-fastest-title');
   elements.routeFastestDistance = document.getElementById('route-fastest-distance');
   elements.routeFastestTime = document.getElementById('route-fastest-time');
@@ -533,5 +655,5 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   }
 
-  fetchWeatherFromCurrentLocation();
+  fetchWeatherFromCurrentLocation(false);
 });
