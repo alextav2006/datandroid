@@ -1,16 +1,247 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Datandroid</title>
+  <!-- Bootstrap 5 -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" />
+  <!-- Bootstrap Icons -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+  <!-- Custom styles -->
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
 
-  <!DOCTYPE html>
-  <html lang="en">
-    <head>
-      <meta charset="UTF-8" />
-      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-      <title>Drone Status Dashboard</title>
-      <style>html, body { height: 100%; margin: 0; } #root { height: 100%; }</style>
-    </head>
+  <!-- ========================================================
+       SCREEN 1: FROTA (Fleet Overview)
+  ======================================================== -->
+  <div id="screen-frota" class="screen active">
+    <div class="container-app py-4">
 
-    <body>
-      <div id="root"></div>
-      <script type="module" src="/src/main.tsx"></script>
-    </body>
-  </html>
-  
+      <!-- Header -->
+      <div class="mb-4 mt-3">
+        <h1 class="display-title">Drones</h1>
+        <p class="text-secondary-custom">Estado geral da frota</p>
+      </div>
+
+      <!-- Status Card -->
+      <div class="card-status mb-3">
+        <div class="mb-3">
+          <h2 class="title2">Drone A1</h2>
+          <span class="badge-status badge-success">Em voo</span>
+        </div>
+        <div class="row g-2">
+          <div class="col-4 metric-box">
+            <div class="metric-label">Velocidade</div>
+            <div class="metric-value">32</div>
+            <div class="metric-unit">km/h</div>
+          </div>
+          <div class="col-4 metric-box">
+            <div class="metric-label">Distância</div>
+            <div class="metric-value">1.2</div>
+            <div class="metric-unit">km</div>
+          </div>
+          <div class="col-4 metric-box">
+            <div class="metric-label">Vento</div>
+            <div class="metric-value" style="font-size:20px">14 km/h</div>
+            <div class="metric-unit">lateral</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Map placeholder -->
+      <div class="map-placeholder mb-4">
+        <i class="bi bi-geo-alt map-icon"></i>
+      </div>
+
+      <!-- Button -->
+      <button class="btn-primary-app w-100" onclick="showScreen('screen-planeamento')">
+        Planear Voo
+      </button>
+
+    </div>
+  </div>
+
+  <!-- ========================================================
+       SCREEN 2: PLANEAMENTO (Flight Planning)
+  ======================================================== -->
+  <div id="screen-planeamento" class="screen">
+    <div class="container-app py-3">
+
+      <!-- Search -->
+      <div class="input-search-wrap mb-4">
+        <i class="bi bi-search input-icon"></i>
+        <input type="text" class="input-search" placeholder="Definir destino…" />
+      </div>
+
+      <!-- Map -->
+      <div class="map-placeholder map-medium mb-4">
+        <i class="bi bi-geo-alt map-icon" style="color:#007AFF"></i>
+      </div>
+
+      <!-- Weather Cards -->
+      <div class="d-flex gap-2 mb-4">
+        <div class="weather-card flex-fill">
+          <i class="bi bi-wind weather-icon"></i>
+          <div class="weather-value">12</div>
+          <div class="weather-unit">km/h</div>
+        </div>
+        <div class="weather-card flex-fill">
+          <i class="bi bi-cloud-rain weather-icon"></i>
+          <div class="weather-value">0%</div>
+          <div class="weather-unit">chuva</div>
+        </div>
+        <div class="weather-card flex-fill">
+          <i class="bi bi-eye weather-icon"></i>
+          <div class="weather-value">8</div>
+          <div class="weather-unit">km vis.</div>
+        </div>
+      </div>
+
+      <!-- Circular Gauge -->
+      <div class="gauge-wrap mb-4">
+        <svg viewBox="0 0 120 120" width="120" height="120">
+          <circle cx="60" cy="60" r="52" fill="none" stroke="#E5E5E7" stroke-width="8"/>
+          <circle cx="60" cy="60" r="52" fill="none" stroke="#007AFF" stroke-width="8"
+            stroke-dasharray="245" stroke-dashoffset="80"
+            stroke-linecap="round" transform="rotate(-90 60 60)"/>
+        </svg>
+        <div class="gauge-label-wrap">
+          <div class="gauge-value">27</div>
+          <div class="gauge-unit">min</div>
+        </div>
+        <div class="gauge-caption">Autonomia estimada</div>
+      </div>
+
+      <!-- Route Cards -->
+      <div class="d-flex flex-column gap-3 mb-5">
+        <div class="route-card route-fastest">
+          <div class="route-badge">⚡ Mais rápida</div>
+          <div class="d-flex justify-content-between mt-2">
+            <span class="route-meta"><i class="bi bi-map"></i> 2.4 km</span>
+            <span class="route-meta"><i class="bi bi-clock"></i> 8 min</span>
+            <span class="route-meta"><i class="bi bi-wind"></i> 12 km/h</span>
+          </div>
+        </div>
+        <div class="route-card route-efficient">
+          <div class="route-badge">🍃 Eficiente</div>
+          <div class="d-flex justify-content-between mt-2">
+            <span class="route-meta"><i class="bi bi-map"></i> 2.8 km</span>
+            <span class="route-meta"><i class="bi bi-clock"></i> 10 min</span>
+            <span class="route-meta"><i class="bi bi-wind"></i> 8 km/h</span>
+          </div>
+        </div>
+        <div class="route-card route-safe">
+          <div class="route-badge">🛡️ Segura</div>
+          <div class="d-flex justify-content-between mt-2">
+            <span class="route-meta"><i class="bi bi-map"></i> 3.1 km</span>
+            <span class="route-meta"><i class="bi bi-clock"></i> 12 min</span>
+            <span class="route-meta"><i class="bi bi-wind"></i> 5 km/h</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ========================================================
+       SCREEN 3: VOO EM CURSO (Real-time Flight)
+  ======================================================== -->
+  <div id="screen-voo" class="screen">
+
+    <!-- Fullscreen Map Area -->
+    <div class="map-fullscreen" style="position:relative">
+      <!-- Grid pattern via CSS -->
+      <div class="map-grid"></div>
+
+      <!-- SVG route + drone -->
+      <svg style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none">
+        <path d="M 50 80% Q 50% 50%, 80% 15%"
+              stroke="#007AFF" stroke-width="4" fill="none" stroke-linecap="round"/>
+        <circle cx="50%" cy="50%" r="12" fill="#007AFF"/>
+        <circle cx="50%" cy="50%" r="6" fill="white"/>
+      </svg>
+
+      <!-- Wind indicator -->
+      <div class="wind-overlay">
+        <i class="bi bi-wind" style="color:#007AFF;font-size:18px"></i>
+        <span class="fw-semibold ms-1">14 km/h</span>
+      </div>
+
+      <!-- Alert Banner -->
+      <div class="alert-banner">
+        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+        Vento lateral forte — reduzir para 22 km/h
+      </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="container-app py-3">
+      <div class="d-flex gap-2 justify-content-center mb-3">
+        <button class="btn-action">
+          <i class="bi bi-arrow-repeat d-block mb-1" style="font-size:20px"></i>
+          <span>Recalcular</span>
+        </button>
+        <button class="btn-action btn-action-eco">
+          <i class="bi bi-leaf d-block mb-1" style="font-size:20px;color:#30D158"></i>
+          <span>Eco Mode</span>
+        </button>
+        <button class="btn-action btn-action-home">
+          <i class="bi bi-house d-block mb-1" style="font-size:20px;color:#007AFF"></i>
+          <span>Return Home</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Bottom Flight Panel -->
+    <div class="bottom-panel">
+      <div class="row g-3">
+        <div class="col-6 metric-box metric-box-large">
+          <div class="metric-label">Altitude</div>
+          <div class="metric-value">120</div>
+          <div class="metric-unit">metros</div>
+        </div>
+        <div class="col-6 metric-box metric-box-large">
+          <div class="metric-label">Velocidade</div>
+          <div class="metric-value">28</div>
+          <div class="metric-unit">km/h</div>
+        </div>
+        <div class="col-6 metric-box metric-box-large">
+          <div class="metric-label">Distância restante</div>
+          <div class="metric-value">0.8</div>
+          <div class="metric-unit">km</div>
+        </div>
+        <div class="col-6 metric-box metric-box-large">
+          <div class="metric-label">Tempo estimado</div>
+          <div class="metric-value">2</div>
+          <div class="metric-unit">min</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ========================================================
+       BOTTOM NAVIGATION (Tab Bar)
+  ======================================================== -->
+  <nav class="bottom-nav">
+    <button id="tab-frota" class="nav-tab active" onclick="showScreen('screen-frota')">
+      <i class="bi bi-drone"></i>
+      <span>Drones</span>
+    </button>
+    <button id="tab-planeamento" class="nav-tab" onclick="showScreen('screen-planeamento')">
+      <i class="bi bi-map"></i>
+      <span>Planear</span>
+    </button>
+    <button id="tab-voo" class="nav-tab" onclick="showScreen('screen-voo')">
+      <i class="bi bi-broadcast"></i>
+      <span>Voo</span>
+    </button>
+  </nav>
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

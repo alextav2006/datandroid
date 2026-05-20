@@ -1,5 +1,0 @@
-import { DesignSystemShowcase } from './components/DesignSystemShowcase';
-
-export default function App() {
-  return <DesignSystemShowcase />;
-}

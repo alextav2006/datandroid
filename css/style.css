@@ -1,0 +1,372 @@
+/* ============================================================
+   Datandroid — Custom Styles (Apple Minimalist)
+   Uses Bootstrap 5 as base
+   ============================================================ */
+
+/* ---- Global ---- */
+*, *::before, *::after { box-sizing: border-box; }
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background: #F2F2F7;
+  color: #1C1C1E;
+  margin: 0;
+  padding: 0;
+  /* Simulate mobile viewport centred on desktop */
+  display: flex;
+  justify-content: center;
+}
+
+/* Mobile shell */
+.screen {
+  display: none;
+  width: 100%;
+  max-width: 428px;
+  min-height: calc(100vh - 70px);
+  background: #FFFFFF;
+  overflow-y: auto;
+  padding-bottom: 90px; /* space for bottom nav */
+}
+
+.screen.active {
+  display: block;
+}
+
+/* Outer container for padding */
+.container-app {
+  padding: 0 20px;
+}
+
+/* ---- Typography ---- */
+.display-title {
+  font-size: 32px;
+  font-weight: 600;
+  letter-spacing: -0.5px;
+  line-height: 1.2;
+  margin: 0 0 4px;
+  color: #1C1C1E;
+}
+
+.title2 {
+  font-size: 20px;
+  font-weight: 500;
+  letter-spacing: -0.3px;
+  margin: 0 0 4px;
+  color: #1C1C1E;
+}
+
+.text-secondary-custom {
+  font-size: 17px;
+  color: #6E6E73;
+}
+
+/* ---- Status Card ---- */
+.card-status {
+  background: #F2F2F7;
+  border-radius: 20px;
+  padding: 20px;
+  border: none;
+}
+
+.badge-status {
+  display: inline-block;
+  font-size: 15px;
+  font-weight: 500;
+  padding: 2px 0;
+}
+
+.badge-success { color: #30D158; }
+.badge-warning { color: #FFD60A; }
+.badge-danger  { color: #FF3B30; }
+
+/* ---- Metrics ---- */
+.metric-box {
+  text-align: left;
+}
+
+.metric-label {
+  font-size: 13px;
+  color: #6E6E73;
+  margin-bottom: 4px;
+}
+
+.metric-value {
+  font-size: 28px;
+  font-weight: 600;
+  letter-spacing: -0.5px;
+  color: #1C1C1E;
+  line-height: 1.1;
+}
+
+.metric-box-large .metric-value {
+  font-size: 32px;
+}
+
+.metric-unit {
+  font-size: 11px;
+  color: #6E6E73;
+  margin-top: 2px;
+}
+
+/* ---- Map Placeholder ---- */
+.map-placeholder {
+  background: #F2F2F7;
+  border-radius: 20px;
+  height: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.map-placeholder.map-medium {
+  height: 180px;
+}
+
+.map-icon {
+  font-size: 48px;
+  color: #6E6E73;
+}
+
+/* ---- Primary Button ---- */
+.btn-primary-app {
+  display: block;
+  width: 100%;
+  background: #007AFF;
+  color: #FFFFFF;
+  border: none;
+  border-radius: 14px;
+  padding: 16px;
+  font-size: 17px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity .15s;
+}
+
+.btn-primary-app:hover { opacity: .85; }
+
+/* ---- Search Input ---- */
+.input-search-wrap {
+  position: relative;
+}
+
+.input-icon {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #6E6E73;
+  font-size: 18px;
+  pointer-events: none;
+}
+
+.input-search {
+  width: 100%;
+  background: #F2F2F7;
+  border: none;
+  border-radius: 12px;
+  padding: 14px 14px 14px 44px;
+  font-size: 17px;
+  color: #1C1C1E;
+  outline: none;
+}
+
+.input-search::placeholder { color: #6E6E73; }
+
+/* ---- Weather Cards ---- */
+.weather-card {
+  background: #F2F2F7;
+  border-radius: 16px;
+  padding: 14px 10px;
+  text-align: center;
+}
+
+.weather-icon {
+  font-size: 22px;
+  color: #007AFF;
+  display: block;
+  margin-bottom: 6px;
+}
+
+.weather-value {
+  font-size: 17px;
+  font-weight: 600;
+  color: #1C1C1E;
+}
+
+.weather-unit {
+  font-size: 11px;
+  color: #6E6E73;
+}
+
+/* ---- Circular Gauge ---- */
+.gauge-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  padding: 8px 0;
+}
+
+.gauge-label-wrap {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -60%);
+  text-align: center;
+  line-height: 1;
+}
+
+.gauge-value {
+  font-size: 28px;
+  font-weight: 600;
+  color: #1C1C1E;
+}
+
+.gauge-unit {
+  font-size: 13px;
+  color: #6E6E73;
+}
+
+.gauge-caption {
+  font-size: 13px;
+  color: #6E6E73;
+  margin-top: 6px;
+}
+
+/* ---- Route Cards ---- */
+.route-card {
+  background: #F2F2F7;
+  border-radius: 16px;
+  padding: 16px;
+  border-left: 4px solid transparent;
+}
+
+.route-fastest { border-left-color: #007AFF; }
+.route-efficient { border-left-color: #30D158; }
+.route-safe { border-left-color: #FFD60A; }
+
+.route-badge {
+  font-size: 15px;
+  font-weight: 600;
+  color: #1C1C1E;
+}
+
+.route-meta {
+  font-size: 13px;
+  color: #6E6E73;
+}
+
+/* ---- Fullscreen Map ---- */
+.map-fullscreen {
+  height: 60vh;
+  background: #F2F2F7;
+  position: relative;
+  overflow: hidden;
+}
+
+.map-grid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(#E5E5E7 1px, transparent 1px),
+    linear-gradient(90deg, #E5E5E7 1px, transparent 1px);
+  background-size: 40px 40px;
+  opacity: 0.4;
+}
+
+/* Wind Overlay */
+.wind-overlay {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  background: rgba(255,255,255,0.92);
+  border: 1px solid #E5E5E7;
+  border-radius: 12px;
+  padding: 10px 14px;
+  display: flex;
+  align-items: center;
+  font-size: 15px;
+  color: #1C1C1E;
+}
+
+/* Alert Banner */
+.alert-banner {
+  position: absolute;
+  bottom: 20px;
+  left: 16px;
+  right: 16px;
+  background: #FFF8E1;
+  border: 1px solid #FFE08A;
+  border-radius: 12px;
+  padding: 12px 16px;
+  font-size: 14px;
+  color: #8A6D1A;
+  font-weight: 500;
+}
+
+/* ---- Quick Action Buttons ---- */
+.btn-action {
+  background: #F2F2F7;
+  border: none;
+  border-radius: 14px;
+  padding: 14px 16px;
+  font-size: 13px;
+  color: #1C1C1E;
+  cursor: pointer;
+  text-align: center;
+  min-width: 90px;
+  transition: opacity .15s;
+}
+
+.btn-action:hover { opacity: .75; }
+
+/* ---- Bottom Flight Panel ---- */
+.bottom-panel {
+  padding: 20px 20px 30px;
+  background: #FFFFFF;
+  border-top: 1px solid #E5E5E7;
+}
+
+/* ---- Bottom Navigation ---- */
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 428px;
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-top: 1px solid #E5E5E7;
+  display: flex;
+  justify-content: space-around;
+  padding: 8px 0 16px;
+  z-index: 100;
+}
+
+.nav-tab {
+  background: none;
+  border: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  font-size: 11px;
+  color: #6E6E73;
+  cursor: pointer;
+  padding: 6px 20px;
+  transition: color .15s;
+}
+
+.nav-tab i {
+  font-size: 22px;
+}
+
+.nav-tab.active {
+  color: #007AFF;
+}
+
+.nav-tab:hover {
+  color: #007AFF;
+}
