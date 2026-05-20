@@ -69,13 +69,17 @@
   <div id="screen-planeamento" class="screen">
     <div class="container-app py-3">
 
-      <!-- Search -->
+      <!-- Route Inputs -->
       <div class="input-search-wrap mb-2">
-        <i class="bi bi-search input-icon"></i>
-        <input id="destination-input" type="text" class="input-search" placeholder="Definir destino…" />
+        <i class="bi bi-pin-map input-icon"></i>
+        <input id="origin-input" type="text" class="input-search" placeholder="Origem (ex: Porto)" />
+      </div>
+      <div class="input-search-wrap mb-2">
+        <i class="bi bi-geo-alt input-icon"></i>
+        <input id="destination-input" type="text" class="input-search" placeholder="Destino (ex: Braga)" />
       </div>
       <div class="d-flex justify-content-between align-items-center mb-4">
-        <button id="btn-weather-destination" class="btn btn-sm btn-outline-primary" type="button">Atualizar meteo</button>
+        <button id="btn-calculate-route" class="btn btn-sm btn-outline-primary" type="button">Calcular rota</button>
         <small id="weather-status" class="text-secondary-custom">A obter localizacao atual...</small>
       </div>
       <p id="weather-location" class="text-secondary-custom mb-3"></p>
@@ -122,27 +126,27 @@
       <!-- Route Cards -->
       <div class="d-flex flex-column gap-3 mb-5">
         <div class="route-card route-fastest">
-          <div class="route-badge">⚡ Mais rápida</div>
+          <div id="route-fastest-title" class="route-badge">⚡ Mais rápida</div>
           <div class="d-flex justify-content-between mt-2">
-            <span class="route-meta"><i class="bi bi-map"></i> 2.4 km</span>
-            <span class="route-meta"><i class="bi bi-clock"></i> 8 min</span>
-            <span class="route-meta"><i class="bi bi-wind"></i> 12 km/h</span>
+            <span id="route-fastest-distance" class="route-meta"><i class="bi bi-map"></i> -- km</span>
+            <span id="route-fastest-time" class="route-meta"><i class="bi bi-clock"></i> -- min</span>
+            <span id="route-fastest-risk" class="route-meta"><i class="bi bi-shield-check"></i> --</span>
           </div>
         </div>
         <div class="route-card route-efficient">
-          <div class="route-badge">🍃 Eficiente</div>
+          <div id="route-balanced-title" class="route-badge">🍃 Alternativa</div>
           <div class="d-flex justify-content-between mt-2">
-            <span class="route-meta"><i class="bi bi-map"></i> 2.8 km</span>
-            <span class="route-meta"><i class="bi bi-clock"></i> 10 min</span>
-            <span class="route-meta"><i class="bi bi-wind"></i> 8 km/h</span>
+            <span id="route-balanced-distance" class="route-meta"><i class="bi bi-map"></i> -- km</span>
+            <span id="route-balanced-time" class="route-meta"><i class="bi bi-clock"></i> -- min</span>
+            <span id="route-balanced-risk" class="route-meta"><i class="bi bi-shield-check"></i> --</span>
           </div>
         </div>
         <div class="route-card route-safe">
-          <div class="route-badge">🛡️ Segura</div>
+          <div id="route-safe-title" class="route-badge">🛡️ Mais segura</div>
           <div class="d-flex justify-content-between mt-2">
-            <span class="route-meta"><i class="bi bi-map"></i> 3.1 km</span>
-            <span class="route-meta"><i class="bi bi-clock"></i> 12 min</span>
-            <span class="route-meta"><i class="bi bi-wind"></i> 5 km/h</span>
+            <span id="route-safe-distance" class="route-meta"><i class="bi bi-map"></i> -- km</span>
+            <span id="route-safe-time" class="route-meta"><i class="bi bi-clock"></i> -- min</span>
+            <span id="route-safe-risk" class="route-meta"><i class="bi bi-shield-check"></i> --</span>
           </div>
         </div>
       </div>

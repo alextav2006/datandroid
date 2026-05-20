@@ -9,8 +9,10 @@ var screenTabMap = {
 
 var WEATHER_API_BASE = 'https://api.open-meteo.com/v1/forecast';
 var GEOCODING_API_BASE = 'https://geocoding-api.open-meteo.com/v1/search';
+var ROUTING_API_BASE = 'https://router.project-osrm.org/route/v1/driving';
 
 var elements = {
+  originInput: null,
   destinationInput: null,
   weatherStatus: null,
   weatherLocation: null,
@@ -28,7 +30,19 @@ var elements = {
   autonomyValue: null,
   autonomyRing: null,
   autonomyCaption: null,
-  weatherBtn: null
+  calculateRouteBtn: null,
+  routeFastestTitle: null,
+  routeFastestDistance: null,
+  routeFastestTime: null,
+  routeFastestRisk: null,
+  routeBalancedTitle: null,
+  routeBalancedDistance: null,
+  routeBalancedTime: null,
+  routeBalancedRisk: null,
+  routeSafeTitle: null,
+  routeSafeDistance: null,
+  routeSafeTime: null,
+  routeSafeRisk: null
 };
 
 function showScreen(screenId) {
@@ -76,6 +90,27 @@ function degToCompass(deg) {
   var directions = ['N', 'NE', 'E', 'SE', 'S', 'SW', 'W', 'NW'];
   var index = Math.round(deg / 45) % 8;
   return directions[index];
+}
+
+function formatDistanceKm(meters) {
+  return roundNumber((meters || 0) / 1000, 1) + ' km';
+}
+
+function formatDurationMin(seconds) {
+  return Math.max(1, Math.round((seconds || 0) / 60)) + ' min';
+}
+
+function calcBearingFromCoords(start, end) {
+  if (!start || !end) return 0;
+  var lat1 = start[1] * Math.PI / 180;
+  var lat2 = end[1] * Math.PI / 180;
+  var dLon = (end[0] - start[0]) * Math.PI / 180;
+
+  var y = Math.sin(dLon) * Math.cos(lat2);
+  var x = Math.cos(lat1) * Math.sin(lat2)
+    - Math.sin(lat1) * Math.cos(lat2) * Math.cos(dLon);
+  var brng = Math.atan2(y, x) * 180 / Math.PI;
+  return (brng + 360) % 360;
 }
 
 function setGaugeMinutes(minutes) {
@@ -132,6 +167,117 @@ function findCurrentHourPrecipProbability(weatherData) {
   var idx = hourly.time.indexOf(currentTime);
   if (idx === -1) return null;
   return hourly.precipitation_probability[idx];
+}
+
+function weatherRiskLabel(score) {
+  if (score >= 75) return 'baixo';
+  if (score >= 55) return 'moderado';
+  return 'alto';
+}
+
+function scoreRouteForDrone(route, weatherCurrent, precipProb) {
+  var coords = route.geometry && route.geometry.coordinates ? route.geometry.coordinates : [];
+  var start = coords.length > 0 ? coords[0] : null;
+  var end = coords.length > 1 ? coords[coords.length - 1] : start;
+
+  var bearing = calcBearingFromCoords(start, end);
+  var windDir = weatherCurrent.wind_direction_10m || 0;
+  var wind = weatherCurrent.wind_speed_10m || 0;
+  var gust = weatherCurrent.wind_gusts_10m || wind;
+  var rain = precipProb || 0;
+
+  var delta = Math.abs(bearing - windDir);
+  if (delta > 180) delta = 360 - delta;
+  var crosswindFactor = Math.abs(Math.sin(delta * Math.PI / 180));
+
+  var distanceKm = (route.distance || 0) / 1000;
+  var durationMin = (route.duration || 0) / 60;
+  var exposurePenalty = (durationMin * 0.35) + (distanceKm * 0.8);
+  var windPenalty = (wind * crosswindFactor * 1.6) + (gust * 0.25);
+  var rainPenalty = rain * 0.35;
+  var visibilityPenalty = 0;
+  if (weatherCurrent.visibility !== null && weatherCurrent.visibility !== undefined) {
+    var visKm = visibilityToKm(weatherCurrent.visibility);
+    if (visKm < 2.5) visibilityPenalty = 18;
+    else if (visKm < 5) visibilityPenalty = 10;
+    else if (visKm < 8) visibilityPenalty = 4;
+  }
+
+  var score = 100 - exposurePenalty - windPenalty - rainPenalty - visibilityPenalty;
+  score = Math.max(5, Math.min(99, roundNumber(score, 1)));
+
+  return {
+    distanceKm: distanceKm,
+    durationMin: durationMin,
+    safetyScore: score,
+    risk: weatherRiskLabel(score)
+  };
+}
+
+function setRouteCardValues(kind, data) {
+  var titleEl = elements.routeFastestTitle;
+  var distanceEl = elements.routeFastestDistance;
+  var timeEl = elements.routeFastestTime;
+  var riskEl = elements.routeFastestRisk;
+
+  if (kind === 'balanced') {
+    titleEl = elements.routeBalancedTitle;
+    distanceEl = elements.routeBalancedDistance;
+    timeEl = elements.routeBalancedTime;
+    riskEl = elements.routeBalancedRisk;
+  } else if (kind === 'safe') {
+    titleEl = elements.routeSafeTitle;
+    distanceEl = elements.routeSafeDistance;
+    timeEl = elements.routeSafeTime;
+    riskEl = elements.routeSafeRisk;
+  }
+
+  if (titleEl && data.title) titleEl.textContent = data.title;
+  if (distanceEl) distanceEl.innerHTML = '<i class="bi bi-map"></i> ' + formatDistanceKm(data.route.distance);
+  if (timeEl) timeEl.innerHTML = '<i class="bi bi-clock"></i> ' + formatDurationMin(data.route.duration);
+  if (riskEl) riskEl.innerHTML = '<i class="bi bi-shield-check"></i> risco ' + data.metrics.risk + ' (' + Math.round(data.metrics.safetyScore) + ')';
+}
+
+function renderRouteRecommendations(routes, weatherData) {
+  if (!routes || routes.length === 0 || !weatherData || !weatherData.current) return;
+
+  var precipProb = findCurrentHourPrecipProbability(weatherData) || 0;
+  var ranked = routes.map(function(route) {
+    return {
+      route: route,
+      metrics: scoreRouteForDrone(route, weatherData.current, precipProb)
+    };
+  });
+
+  var fastest = ranked.reduce(function(best, current) {
+    return current.route.duration < best.route.duration ? current : best;
+  }, ranked[0]);
+
+  var safest = ranked.reduce(function(best, current) {
+    return current.metrics.safetyScore > best.metrics.safetyScore ? current : best;
+  }, ranked[0]);
+
+  var balanced = ranked.reduce(function(best, current) {
+    var bestScore = best.metrics.safetyScore - (best.route.duration / 60) * 0.9;
+    var currentScore = current.metrics.safetyScore - (current.route.duration / 60) * 0.9;
+    return currentScore > bestScore ? current : best;
+  }, ranked[0]);
+
+  setRouteCardValues('fastest', {
+    title: '⚡ Mais rapida',
+    route: fastest.route,
+    metrics: fastest.metrics
+  });
+  setRouteCardValues('balanced', {
+    title: '🍃 Equilibrada',
+    route: balanced.route,
+    metrics: balanced.metrics
+  });
+  setRouteCardValues('safe', {
+    title: '🛡️ Mais segura',
+    route: safest.route,
+    metrics: safest.metrics
+  });
 }
 
 function updateWeatherUI(weatherData, locationLabel) {
@@ -206,14 +352,22 @@ function buildWeatherUrl(lat, lon) {
   return WEATHER_API_BASE + '?' + params.join('&');
 }
 
-function fetchWeatherByCoords(lat, lon, label) {
-  setStatus('A obter meteo real...', false);
-
+function fetchWeatherDataByCoords(lat, lon) {
   return fetch(buildWeatherUrl(lat, lon))
     .then(function(response) {
       if (!response.ok) throw new Error('Falha na API de meteo');
       return response.json();
     })
+    .then(function(data) {
+      if (!data || !data.current) throw new Error('Resposta meteo invalida');
+      return data;
+    });
+}
+
+function fetchWeatherByCoords(lat, lon, label) {
+  setStatus('A obter meteo real...', false);
+
+  return fetchWeatherDataByCoords(lat, lon)
     .then(function(data) {
       if (!data || !data.current) throw new Error('Resposta meteo invalida');
       updateWeatherUI(data, label);
@@ -242,21 +396,61 @@ function geocodeDestination(query) {
     });
 }
 
-function fetchWeatherByDestination() {
-  if (!elements.destinationInput) return;
-  var query = (elements.destinationInput.value || '').trim();
-  if (!query) {
-    setStatus('Escreve um destino para atualizar a meteo.', true);
+function fetchRouteAlternatives(origin, destination) {
+  var url = ROUTING_API_BASE
+    + '/' + encodeURIComponent(origin.longitude) + ',' + encodeURIComponent(origin.latitude)
+    + ';' + encodeURIComponent(destination.longitude) + ',' + encodeURIComponent(destination.latitude)
+    + '?alternatives=true&overview=full&geometries=geojson&steps=false';
+
+  return fetch(url)
+    .then(function(response) {
+      if (!response.ok) throw new Error('Falha na API de rotas');
+      return response.json();
+    })
+    .then(function(data) {
+      if (!data || !data.routes || data.routes.length === 0) {
+        throw new Error('Sem rotas para esta origem/destino');
+      }
+      return data.routes.slice(0, 3);
+    });
+}
+
+function calculateRouteFromInputs() {
+  if (!elements.originInput || !elements.destinationInput) return;
+
+  var originText = (elements.originInput.value || '').trim();
+  var destinationText = (elements.destinationInput.value || '').trim();
+
+  if (!originText || !destinationText) {
+    setStatus('Preenche origem e destino para calcular rota.', true);
     return;
   }
 
-  setStatus('A procurar destino...', false);
-  geocodeDestination(query)
-    .then(function(place) {
-      var label = place.name;
-      if (place.admin1) label += ', ' + place.admin1;
-      if (place.country) label += ', ' + place.country;
-      return fetchWeatherByCoords(place.latitude, place.longitude, label);
+  setStatus('A calcular rota e condicoes de voo...', false);
+
+  Promise.all([geocodeDestination(originText), geocodeDestination(destinationText)])
+    .then(function(places) {
+      var origin = places[0];
+      var destination = places[1];
+      var midLat = (origin.latitude + destination.latitude) / 2;
+      var midLon = (origin.longitude + destination.longitude) / 2;
+      var locationLabel = origin.name + ' → ' + destination.name;
+
+      return Promise.all([
+        fetchRouteAlternatives(origin, destination),
+        fetchWeatherDataByCoords(midLat, midLon)
+      ]).then(function(data) {
+        return {
+          routes: data[0],
+          weather: data[1],
+          label: locationLabel
+        };
+      });
+    })
+    .then(function(result) {
+      updateWeatherUI(result.weather, result.label);
+      renderRouteRecommendations(result.routes, result.weather);
+      setStatus('Rota mais rapida e mais segura calculadas', false);
     })
     .catch(function(error) {
       setStatus(error.message, true);
@@ -285,6 +479,7 @@ function fetchWeatherFromCurrentLocation() {
 }
 
 document.addEventListener('DOMContentLoaded', function() {
+  elements.originInput = document.getElementById('origin-input');
   elements.destinationInput = document.getElementById('destination-input');
   elements.weatherStatus = document.getElementById('weather-status');
   elements.weatherLocation = document.getElementById('weather-location');
@@ -302,17 +497,38 @@ document.addEventListener('DOMContentLoaded', function() {
   elements.autonomyValue = document.getElementById('autonomy-value');
   elements.autonomyRing = document.getElementById('autonomy-ring');
   elements.autonomyCaption = document.getElementById('autonomy-caption');
-  elements.weatherBtn = document.getElementById('btn-weather-destination');
+  elements.calculateRouteBtn = document.getElementById('btn-calculate-route');
+  elements.routeFastestTitle = document.getElementById('route-fastest-title');
+  elements.routeFastestDistance = document.getElementById('route-fastest-distance');
+  elements.routeFastestTime = document.getElementById('route-fastest-time');
+  elements.routeFastestRisk = document.getElementById('route-fastest-risk');
+  elements.routeBalancedTitle = document.getElementById('route-balanced-title');
+  elements.routeBalancedDistance = document.getElementById('route-balanced-distance');
+  elements.routeBalancedTime = document.getElementById('route-balanced-time');
+  elements.routeBalancedRisk = document.getElementById('route-balanced-risk');
+  elements.routeSafeTitle = document.getElementById('route-safe-title');
+  elements.routeSafeDistance = document.getElementById('route-safe-distance');
+  elements.routeSafeTime = document.getElementById('route-safe-time');
+  elements.routeSafeRisk = document.getElementById('route-safe-risk');
 
-  if (elements.weatherBtn) {
-    elements.weatherBtn.addEventListener('click', fetchWeatherByDestination);
+  if (elements.calculateRouteBtn) {
+    elements.calculateRouteBtn.addEventListener('click', calculateRouteFromInputs);
+  }
+
+  if (elements.originInput) {
+    elements.originInput.addEventListener('keydown', function(event) {
+      if (event.key === 'Enter') {
+        event.preventDefault();
+        calculateRouteFromInputs();
+      }
+    });
   }
 
   if (elements.destinationInput) {
     elements.destinationInput.addEventListener('keydown', function(event) {
       if (event.key === 'Enter') {
         event.preventDefault();
-        fetchWeatherByDestination();
+        calculateRouteFromInputs();
       }
     });
   }
