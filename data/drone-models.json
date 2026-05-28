@@ -1,0 +1,74 @@
+[
+  {
+    "id": "atlas_x4",
+    "name": "Atlas X4",
+    "manufacturer": "AeroMatrix",
+    "autonomyMin": 42,
+    "maxSpeedKmh": 68,
+    "maxPayloadG": 1200,
+    "recommendedUse": "Inspecao industrial e vigilancia perimetral"
+  },
+  {
+    "id": "vento_s9",
+    "name": "Vento S9",
+    "manufacturer": "SkyForge",
+    "autonomyMin": 36,
+    "maxSpeedKmh": 74,
+    "maxPayloadG": 850,
+    "recommendedUse": "Resposta rapida e missao urbana curta"
+  },
+  {
+    "id": "falcon_edge",
+    "name": "Falcon Edge",
+    "manufacturer": "Helix Dynamics",
+    "autonomyMin": 48,
+    "maxSpeedKmh": 63,
+    "maxPayloadG": 1500,
+    "recommendedUse": "Topografia e captura fotografica prolongada"
+  },
+  {
+    "id": "lince_mk2",
+    "name": "Lince MK2",
+    "manufacturer": "Vector Labs",
+    "autonomyMin": 31,
+    "maxSpeedKmh": 82,
+    "maxPayloadG": 700,
+    "recommendedUse": "Reconhecimento tactico e seguimento de alvo"
+  },
+  {
+    "id": "aurora_lite",
+    "name": "Aurora Lite",
+    "manufacturer": "Nexa Flight",
+    "autonomyMin": 29,
+    "maxSpeedKmh": 54,
+    "maxPayloadG": 420,
+    "recommendedUse": "Levantamento rapido e missao de treino"
+  },
+  {
+    "id": "cargo_h12",
+    "name": "Cargo H12",
+    "manufacturer": "LoadWing",
+    "autonomyMin": 34,
+    "maxSpeedKmh": 58,
+    "maxPayloadG": 2600,
+    "recommendedUse": "Entrega tecnica e transporte de sensores"
+  },
+  {
+    "id": "sentinel_r3",
+    "name": "Sentinel R3",
+    "manufacturer": "Orbitix",
+    "autonomyMin": 45,
+    "maxSpeedKmh": 61,
+    "maxPayloadG": 980,
+    "recommendedUse": "Patrulhamento autonomo e observacao costeira"
+  },
+  {
+    "id": "zephyr_duo",
+    "name": "Zephyr Duo",
+    "manufacturer": "BlueCurrent",
+    "autonomyMin": 39,
+    "maxSpeedKmh": 66,
+    "maxPayloadG": 1100,
+    "recommendedUse": "Mapeamento de corredor logistico e analise ambiental"
+  }
+]
