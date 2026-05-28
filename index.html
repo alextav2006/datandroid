@@ -4,6 +4,9 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Datandroid</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;600;700&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <!-- Bootstrap 5 -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" />
   <!-- Bootstrap Icons -->
@@ -12,6 +15,59 @@
   <link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
+  <svg width="0" height="0" style="position:absolute">
+    <symbol id="icon-drone" viewBox="0 0 64 64">
+      <circle cx="20" cy="18" r="7" fill="none" stroke="currentColor" stroke-width="4"></circle>
+      <circle cx="44" cy="18" r="7" fill="none" stroke="currentColor" stroke-width="4"></circle>
+      <circle cx="20" cy="46" r="7" fill="none" stroke="currentColor" stroke-width="4"></circle>
+      <circle cx="44" cy="46" r="7" fill="none" stroke="currentColor" stroke-width="4"></circle>
+      <path d="M24 22l8 6 8-6M24 42l8-6 8 6M32 28v8" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"></path>
+      <rect x="26" y="26" width="12" height="12" rx="3" fill="none" stroke="currentColor" stroke-width="4"></rect>
+    </symbol>
+    <symbol id="icon-battery" viewBox="0 0 64 64">
+      <rect x="8" y="20" width="44" height="24" rx="4" fill="none" stroke="currentColor" stroke-width="4"></rect>
+      <rect x="52" y="27" width="4" height="10" rx="1" fill="currentColor"></rect>
+      <rect x="14" y="26" width="28" height="12" rx="2" fill="currentColor"></rect>
+    </symbol>
+    <symbol id="icon-gps" viewBox="0 0 64 64">
+      <circle cx="32" cy="32" r="18" fill="none" stroke="currentColor" stroke-width="4"></circle>
+      <circle cx="32" cy="32" r="5" fill="currentColor"></circle>
+      <path d="M32 8v10M32 46v10M8 32h10M46 32h10" stroke="currentColor" stroke-width="4" stroke-linecap="round"></path>
+    </symbol>
+    <symbol id="icon-wind" viewBox="0 0 64 64">
+      <path d="M10 24h30c6 0 10-4 10-10 0-5-4-8-8-8-5 0-8 3-9 7" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round"></path>
+      <path d="M10 34h40c5 0 8 3 8 8s-4 8-8 8c-4 0-7-2-8-6" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round"></path>
+      <path d="M10 44h20" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round"></path>
+    </symbol>
+    <symbol id="icon-speed" viewBox="0 0 64 64">
+      <path d="M16 46a18 18 0 1 1 32 0" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round"></path>
+      <path d="M32 32l12-10" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round"></path>
+      <circle cx="32" cy="32" r="4" fill="currentColor"></circle>
+    </symbol>
+  </svg>
+
+  <div id="splash-screen" class="splash-screen active" aria-live="polite">
+    <div class="splash-panel">
+      <div class="splash-logo-wrap">
+        <div class="splash-logo-mark">D</div>
+        <div>
+          <div class="splash-logo-title">Datandroid</div>
+          <div class="splash-logo-subtitle">Centro de comando tatico para operacoes UAV</div>
+        </div>
+      </div>
+      <div class="splash-progress-shell">
+        <div id="splash-progress-bar" class="splash-progress-bar"></div>
+      </div>
+      <div id="splash-status" class="splash-status">A iniciar sistema...</div>
+      <div class="splash-status-list">
+        <span>A carregar frota...</span>
+        <span>A verificar meteorologia...</span>
+        <span>A sincronizar rotas...</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="app-shell">
 
   <!-- ========================================================
        SCREEN 1: FROTA (Fleet Overview)
@@ -27,22 +83,30 @@
 
       <!-- Status Card -->
       <div class="card-status mb-3">
-        <div class="mb-3">
-          <h2 class="title2">Drone A1</h2>
+        <div class="card-status-header mb-3">
+          <h2 id="frota-drone-title" class="title2">Drone A1</h2>
           <span class="badge-status badge-success">Em voo</span>
         </div>
         <div class="row g-2">
-          <div class="col-4 metric-box">
+          <div class="col-md-3 col-6 metric-box metric-box-signal">
+            <div class="metric-icon-wrap">
+              <svg class="metric-icon"><use href="#icon-battery"></use></svg>
+            </div>
+            <div class="metric-label">Bateria</div>
+            <div class="metric-value">87</div>
+            <div class="metric-unit">%</div>
+          </div>
+          <div class="col-md-3 col-6 metric-box metric-box-signal">
             <div class="metric-label">Velocidade</div>
             <div class="metric-value">32</div>
             <div class="metric-unit">km/h</div>
           </div>
-          <div class="col-4 metric-box">
+          <div class="col-md-3 col-6 metric-box metric-box-signal">
             <div class="metric-label">Distância</div>
             <div class="metric-value">1.2</div>
             <div class="metric-unit">km</div>
           </div>
-          <div class="col-4 metric-box">
+          <div class="col-md-3 col-6 metric-box metric-box-signal">
             <div class="metric-label">Vento</div>
             <div id="frota-wind-value" class="metric-value" style="font-size:20px">14 km/h</div>
             <div id="frota-wind-direction" class="metric-unit">lateral</div>
@@ -69,6 +133,15 @@
   <div id="screen-planeamento" class="screen">
     <div class="container-app py-3">
 
+      <div class="model-toolbar mb-3">
+        <label class="model-label" for="drone-model-select">Modelo do drone</label>
+        <select id="drone-model-select" class="form-select form-select-sm model-select">
+          <option value="">A carregar modelos...</option>
+        </select>
+        <small id="drone-model-status" class="text-secondary-custom">A obter modelos por API...</small>
+        <small class="helper-copy">Selecione a aeronave para recalibrar velocidade de cruzeiro, autonomia e limites de vento.</small>
+      </div>
+
       <!-- Route Inputs -->
       <div class="input-search-wrap mb-2">
         <i class="bi bi-pin-map input-icon"></i>
@@ -78,22 +151,65 @@
         <i class="bi bi-geo-alt input-icon"></i>
         <input id="destination-input" type="text" class="input-search" placeholder="Destino (ex: Braga)" />
       </div>
-      <div class="d-flex justify-content-between align-items-center mb-4">
-        <div class="d-flex gap-2">
-          <button id="btn-use-current-location" class="btn btn-sm btn-outline-secondary" type="button">Usar localizacao atual</button>
-          <button id="btn-calculate-route" class="btn btn-sm btn-outline-primary" type="button">Calcular rota</button>
+      <div class="field-help-row mb-3">
+        <span class="field-help">Pode inserir cidade, local operacional ou coordenadas em formato latitude,longitude.</span>
+        <span class="field-help">As rotas sao avaliadas por duracao, meteorologia e vento lateral.</span>
+      </div>
+      <div class="plan-toolbar mb-4">
+        <div class="plan-actions d-flex gap-2">
+          <button id="btn-use-current-location" class="btn btn-sm btn-outline-secondary" type="button" title="Usa a geolocalizacao do dispositivo como ponto de origem">Usar localizacao atual</button>
+          <button id="btn-calculate-route" class="btn btn-sm btn-outline-primary" type="button" title="Calcula ate tres alternativas e respetivo score de seguranca">Calcular rota</button>
+          <button id="btn-start-flight" class="btn btn-sm btn-primary" type="button" title="Ativa a simulacao visual do drone e abre a vista de voo">Iniciar voo</button>
         </div>
         <small id="weather-status" class="text-secondary-custom">A obter localizacao atual...</small>
       </div>
       <p id="weather-location" class="text-secondary-custom mb-3"></p>
 
       <!-- Map -->
-      <div class="map-placeholder map-medium mb-4">
-        <i class="bi bi-geo-alt map-icon" style="color:#007AFF"></i>
+      <div class="map-placeholder map-medium map-radar mb-4">
+        <div class="map-radar-grid"></div>
+        <svg class="map-flight-svg" viewBox="0 0 640 320" preserveAspectRatio="none" aria-hidden="true">
+          <defs>
+            <linearGradient id="routeGlow" x1="0" x2="1">
+              <stop offset="0%" stop-color="#00e5ff"></stop>
+              <stop offset="100%" stop-color="#7dffb3"></stop>
+            </linearGradient>
+            <filter id="routeShadow">
+              <feGaussianBlur stdDeviation="4" result="blur"></feGaussianBlur>
+              <feMerge>
+                <feMergeNode in="blur"></feMergeNode>
+                <feMergeNode in="SourceGraphic"></feMergeNode>
+              </feMerge>
+            </filter>
+          </defs>
+          <circle cx="140" cy="210" r="14" class="map-point-origin"></circle>
+          <circle cx="500" cy="90" r="14" class="map-point-destination"></circle>
+          <path id="planning-route-path" d="M140 210 C 260 250, 320 70, 500 90" class="map-route-line"></path>
+          <path d="M140 210 C 260 250, 320 70, 500 90" class="map-route-glow" filter="url(#routeShadow)"></path>
+          <g id="planning-drone-marker" class="map-drone-marker">
+            <path d="M0 -10 L12 0 L0 10 L-12 0 Z" fill="#9fffd1"></path>
+            <circle r="4" fill="#0a1019"></circle>
+            <animateMotion dur="6s" repeatCount="indefinite" rotate="auto">
+              <mpath href="#planning-route-path"></mpath>
+            </animateMotion>
+          </g>
+        </svg>
+        <div class="map-point-label map-point-label-origin">
+          <svg class="mini-icon"><use href="#icon-gps"></use></svg>
+          Origem
+        </div>
+        <div class="map-point-label map-point-label-destination">
+          <svg class="mini-icon"><use href="#icon-gps"></use></svg>
+          Destino
+        </div>
+        <div class="map-legend-panel">
+          <span><svg class="mini-icon"><use href="#icon-speed"></use></svg> Rota simulada</span>
+          <span><svg class="mini-icon"><use href="#icon-wind"></use></svg> Vetor de vento</span>
+        </div>
       </div>
 
       <!-- Weather Cards -->
-      <div class="d-flex gap-2 mb-4">
+      <div class="weather-grid mb-4">
         <div class="weather-card flex-fill">
           <i class="bi bi-wind weather-icon"></i>
           <div id="weather-wind-value" class="weather-value">12</div>
@@ -127,10 +243,10 @@
       </div>
 
       <!-- Route Cards -->
-      <div class="d-flex flex-column gap-3 mb-5">
+      <div class="d-flex flex-column gap-3 mb-4">
         <div class="route-card route-fastest">
           <div id="route-fastest-title" class="route-badge">⚡ Mais rápida</div>
-          <div class="d-flex justify-content-between mt-2">
+          <div class="route-meta-row mt-2">
             <span id="route-fastest-distance" class="route-meta"><i class="bi bi-map"></i> -- km</span>
             <span id="route-fastest-time" class="route-meta"><i class="bi bi-clock"></i> -- min</span>
             <span id="route-fastest-risk" class="route-meta"><i class="bi bi-shield-check"></i> --</span>
@@ -138,7 +254,7 @@
         </div>
         <div class="route-card route-efficient">
           <div id="route-balanced-title" class="route-badge">🍃 Alternativa</div>
-          <div class="d-flex justify-content-between mt-2">
+          <div class="route-meta-row mt-2">
             <span id="route-balanced-distance" class="route-meta"><i class="bi bi-map"></i> -- km</span>
             <span id="route-balanced-time" class="route-meta"><i class="bi bi-clock"></i> -- min</span>
             <span id="route-balanced-risk" class="route-meta"><i class="bi bi-shield-check"></i> --</span>
@@ -146,12 +262,26 @@
         </div>
         <div class="route-card route-safe">
           <div id="route-safe-title" class="route-badge">🛡️ Mais segura</div>
-          <div class="d-flex justify-content-between mt-2">
+          <div class="route-meta-row mt-2">
             <span id="route-safe-distance" class="route-meta"><i class="bi bi-map"></i> -- km</span>
             <span id="route-safe-time" class="route-meta"><i class="bi bi-clock"></i> -- min</span>
             <span id="route-safe-risk" class="route-meta"><i class="bi bi-shield-check"></i> --</span>
           </div>
         </div>
+      </div>
+
+      <div class="score-details mb-5">
+        <div class="score-details-title">Detalhes do calculo</div>
+        <div id="detail-overall-score" class="score-details-line">Score geral: --</div>
+        <div id="detail-route" class="score-details-line">Rota: --</div>
+        <div id="detail-climate" class="score-details-line">Clima: --</div>
+        <div id="detail-wind" class="score-details-line">Vento: --</div>
+        <div id="detail-weights" class="score-details-line">Pesos: --</div>
+      </div>
+
+      <div class="content-note mb-5">
+        <div class="content-note-title">Apoio ao operador</div>
+        <p class="content-note-text mb-0">Verifique o score de seguranca, a intensidade de rajadas e a autonomia residual antes de autorizar a descolagem. A recomendacao nao substitui a avaliacao operacional no terreno.</p>
       </div>
 
     </div>
@@ -168,11 +298,11 @@
       <div class="map-grid"></div>
 
       <!-- SVG route + drone -->
-      <svg style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none">
-        <path d="M 50 80% Q 50% 50%, 80% 15%"
-              stroke="#007AFF" stroke-width="4" fill="none" stroke-linecap="round"/>
-        <circle cx="50%" cy="50%" r="12" fill="#007AFF"/>
-        <circle cx="50%" cy="50%" r="6" fill="white"/>
+      <svg viewBox="0 0 600 320" preserveAspectRatio="none" style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none">
+        <path d="M 80 270 Q 270 170, 520 60"
+          stroke="#00D1FF" stroke-width="4" fill="none" stroke-linecap="round"/>
+        <circle cx="270" cy="170" r="12" fill="#00D1FF"/>
+        <circle cx="270" cy="170" r="6" fill="white"/>
       </svg>
 
       <!-- Wind indicator -->
@@ -190,19 +320,58 @@
 
     <!-- Quick Actions -->
     <div class="container-app py-3">
-      <div class="d-flex gap-2 justify-content-center mb-3">
-        <button class="btn-action">
+      <div class="quick-actions d-flex gap-2 justify-content-center mb-3">
+        <button class="btn-action" title="Recalcula a rota com as condicoes meteo mais recentes">
           <i class="bi bi-arrow-repeat d-block mb-1" style="font-size:20px"></i>
           <span>Recalcular</span>
         </button>
-        <button class="btn-action btn-action-eco">
+        <button class="btn-action btn-action-eco" title="Reduz a velocidade para otimizar autonomia e estabilidade">
           <i class="bi bi-leaf d-block mb-1" style="font-size:20px;color:#30D158"></i>
-          <span>Eco Mode</span>
+          <span>Modo Eco</span>
         </button>
-        <button class="btn-action btn-action-home">
+        <button class="btn-action btn-action-home" title="Define um regresso assistido ao ponto de partida">
           <i class="bi bi-house d-block mb-1" style="font-size:20px;color:#007AFF"></i>
-          <span>Return Home</span>
+          <span>Regresso base</span>
         </button>
+      </div>
+
+      <div class="instrument-grid mb-4">
+        <article id="instrument-wind" class="instrument-card status-normal">
+          <div class="instrument-topline">
+            <span class="instrument-tag"><svg class="mini-icon"><use href="#icon-wind"></use></svg> vento</span>
+            <span class="instrument-state">normal</span>
+          </div>
+          <div id="instrument-wind-value" class="instrument-value">14</div>
+          <div class="instrument-unit">km/h</div>
+          <p class="instrument-hint">Rajadas dentro da janela operacional.</p>
+        </article>
+        <article id="instrument-speed" class="instrument-card status-normal">
+          <div class="instrument-topline">
+            <span class="instrument-tag"><svg class="mini-icon"><use href="#icon-speed"></use></svg> velocidade</span>
+            <span class="instrument-state">cruzeiro</span>
+          </div>
+          <div id="instrument-speed-value" class="instrument-value">28</div>
+          <div class="instrument-unit">km/h</div>
+          <p class="instrument-hint">Velocidade recomendada para estabilidade lateral.</p>
+        </article>
+        <article id="instrument-autonomy" class="instrument-card status-normal">
+          <div class="instrument-topline">
+            <span class="instrument-tag"><svg class="mini-icon"><use href="#icon-battery"></use></svg> autonomia</span>
+            <span class="instrument-state">suficiente</span>
+          </div>
+          <div id="instrument-autonomy-value" class="instrument-value">27</div>
+          <div class="instrument-unit">min</div>
+          <p class="instrument-hint">Reserva para retorno dentro da margem minima.</p>
+        </article>
+        <article id="instrument-alert" class="instrument-card status-warning">
+          <div class="instrument-topline">
+            <span class="instrument-tag"><svg class="mini-icon"><use href="#icon-gps"></use></svg> alerta</span>
+            <span id="instrument-alert-state" class="instrument-state">monitorizar</span>
+          </div>
+          <div id="instrument-alert-value" class="instrument-value instrument-value-text">Lateral</div>
+          <div class="instrument-unit">estado de voo</div>
+          <p id="instrument-alert-hint" class="instrument-hint">Manter observacao do vento cruzado.</p>
+        </article>
       </div>
     </div>
 
@@ -235,11 +404,43 @@
   </div>
 
   <!-- ========================================================
+       SCREEN 4: HISTORICO DE VOOS
+  ======================================================== -->
+  <div id="screen-historico" class="screen">
+    <div class="container-app py-4">
+      <div class="mb-4 mt-3 section-header-row">
+        <div>
+          <h1 class="display-title">Historico</h1>
+          <p class="text-secondary-custom mb-0">Registo de operacoes recentes com score de seguranca e duracao prevista.</p>
+        </div>
+        <button id="btn-export-history" class="btn btn-outline-info btn-sm" type="button">Exportar JSON</button>
+      </div>
+
+      <div class="table-responsive history-table-wrap">
+        <table class="table table-dark table-hover align-middle history-table mb-0">
+          <thead>
+            <tr>
+              <th><button class="sort-button" data-sort-key="date" type="button">Data</button></th>
+              <th><button class="sort-button" data-sort-key="origin" type="button">Origem</button></th>
+              <th><button class="sort-button" data-sort-key="destination" type="button">Destino</button></th>
+              <th><button class="sort-button" data-sort-key="model" type="button">Modelo</button></th>
+              <th><button class="sort-button" data-sort-key="score" type="button">Score</button></th>
+              <th><button class="sort-button" data-sort-key="duration" type="button">Duracao</button></th>
+            </tr>
+          </thead>
+          <tbody id="history-table-body"></tbody>
+        </table>
+      </div>
+      <p class="history-help mb-0">Clique no nome de cada coluna para ordenar. O ficheiro JSON exportado reflete a ordenacao atual.</p>
+    </div>
+  </div>
+
+  <!-- ========================================================
        BOTTOM NAVIGATION (Tab Bar)
   ======================================================== -->
   <nav class="bottom-nav">
     <button id="tab-frota" class="nav-tab active" onclick="showScreen('screen-frota')">
-      <i class="bi bi-drone"></i>
+      <svg class="nav-icon"><use href="#icon-drone"></use></svg>
       <span>Drones</span>
     </button>
     <button id="tab-planeamento" class="nav-tab" onclick="showScreen('screen-planeamento')">
@@ -250,7 +451,12 @@
       <i class="bi bi-broadcast"></i>
       <span>Voo</span>
     </button>
+    <button id="tab-historico" class="nav-tab" onclick="showScreen('screen-historico')">
+      <i class="bi bi-clock-history"></i>
+      <span>Historico</span>
+    </button>
   </nav>
+  </div>
 
   <!-- Bootstrap JS -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
