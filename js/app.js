@@ -183,7 +183,7 @@ function tryHideSplashScreen() {
   if (!startupState.modelsReady || !startupState.weatherReady || !startupState.minimumDelayDone) return;
 
   startupState.splashHidden = true;
-  setSplashStatus('Sistema pronto para operacao', 100);
+  setSplashStatus('Sistema pronto', 100);
 
   if (elements.splashScreen) {
     elements.splashScreen.classList.add('hidden');
@@ -206,8 +206,8 @@ function forceStartupCompletion() {
   startupState.modelsReady = true;
   startupState.weatherReady = true;
   startupState.minimumDelayDone = true;
-  setSplashStatus('Modo offline ativo. Continuar sem sincronizacao completa.', 100);
-  setStatus('Arranque em modo offline. Algumas integracoes podem demorar a responder.', true);
+  setSplashStatus('Modo offline ativo', 100);
+  setStatus('A funcionar em modo offline.', true);
   tryHideSplashScreen();
 }
 
@@ -351,7 +351,7 @@ function fetchDroneModelsFromApi() {
           maxSpeedKmh: parseNumericBinding(row.maxSpeed && row.maxSpeed.value) || null,
           autonomyMin: null,
           maxPayloadG: 0,
-          recommendedUse: 'Modelo importado por API'
+          recommendedUse: 'Dados de API externa'
         });
       });
 
@@ -391,7 +391,7 @@ function loadDroneModels() {
       droneModelsCache = models;
       renderDroneModelOptions(models);
       applyDroneModel(models[0].id);
-      markStartupReady('models', 'Frota sincronizada', 56);
+      markStartupReady('models', 'Modelos carregados', 56);
     });
 }
 

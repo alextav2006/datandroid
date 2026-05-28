@@ -52,7 +52,7 @@
         <div class="splash-logo-mark">D</div>
         <div>
           <div class="splash-logo-title">Datandroid</div>
-          <div class="splash-logo-subtitle">Centro de comando tatico para operacoes UAV</div>
+          <div class="splash-logo-subtitle">Plataforma de operacoes de drones</div>
         </div>
       </div>
       <div class="splash-progress-shell">
@@ -138,7 +138,7 @@
           <option value="">A carregar modelos...</option>
         </select>
         <small id="drone-model-status" class="text-secondary-custom">A obter modelos por API...</small>
-        <small class="helper-copy">Selecione a aeronave para recalibrar velocidade de cruzeiro, autonomia e limites de vento.</small>
+        <small class="helper-copy">Selecione a aeronave para ajustar limites de velocidade, autonomia e vento.</small>
       </div>
 
       <!-- Route Inputs -->
@@ -152,7 +152,7 @@
       </div>
       <div class="field-help-row mb-3">
         <span class="field-help">Pode inserir cidade, local operacional ou coordenadas em formato latitude,longitude.</span>
-        <span class="field-help">As rotas sao avaliadas por duracao, meteorologia e vento lateral.</span>
+        <span class="field-help">As rotas sao avaliadas por duracao, chuva e vento lateral.</span>
       </div>
       <div class="plan-toolbar mb-4">
         <div class="plan-actions d-flex gap-2">
@@ -279,24 +279,9 @@
       </div>
 
       <div class="content-note mb-5">
-        <div class="content-note-title">Apoio ao operador</div>
-        <p class="content-note-text mb-0">Verifique o score de seguranca, a intensidade de rajadas e a autonomia residual antes de autorizar a descolagem. A recomendacao nao substitui a avaliacao operacional no terreno.</p>
+        <div class="content-note-title">Nota operacional</div>
+        <p class="content-note-text mb-0">Confirme score, rajadas e autonomia antes da descolagem.</p>
       </div>
-    </div>
-  </div>
-  <!-- ========================================================
-       SCREEN 4: HISTÓRICO (Flight History)
-  ======================================================== -->
-  <div id="screen-historico" class="screen">
-    <div class="container-app py-4">
-      <div class="d-flex justify-content-between align-items-start mb-4 gap-2">
-        <div>
-          <h1 class="display-title">Histórico</h1>
-          <p class="text-secondary-custom">Registos dos últimos voos planeados</p>
-        </div>
-        <button id="clear-history" class="btn-secondary">Limpar</button>
-      </div>
-      <div id="history-list" class="history-list"></div>
     </div>
   </div>
 
