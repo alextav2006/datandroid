@@ -145,6 +145,19 @@ table {
   padding: 24px;
 }
 
+.card-status .row.g-2 > [class*="col-"] {
+  display: flex;
+  align-items: stretch;
+}
+
+.card-status .metric-box {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex: 1;
+}
+
 .card-status-header {
   display: flex;
   justify-content: space-between;
