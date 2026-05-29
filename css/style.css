@@ -722,11 +722,18 @@ table {
   width: auto;
   line-height: 1;
   font-size: 20px;
-  font-family: "Bootstrap Icons", sans-serif;
+  font-family: "bootstrap-icons" !important;
+  font-style: normal !important;
+  font-weight: normal !important;
+  speak: none;
+  text-transform: none;
+  line-height: 1;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 .btn-action-eco .bi {
-  color: #30D158;
+  color: #30D158 !important;
 }
 
 .instrument-grid {
