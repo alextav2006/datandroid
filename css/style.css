@@ -718,8 +718,11 @@ table {
 }
 
 .btn-action .bi {
-  display: block;
+  display: inline-block;
+  width: auto;
+  line-height: 1;
   font-size: 20px;
+  font-family: "Bootstrap Icons", sans-serif;
 }
 
 .btn-action-eco .bi {
