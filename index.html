@@ -132,46 +132,6 @@
   ======================================================== -->
   <div id="screen-planeamento" class="screen">
     <div class="container-app py-3" id="planning-screen">
-<<<<<<< HEAD
-
-      <div class="mb-4 mt-3">
-        <h1 class="display-title">Planeamento</h1>
-        <p class="text-secondary-custom">Defina origem, destino e avalie a rota</p>
-      </div>
-
-      <div class="flight-plan-form mb-4">
-        <label class="form-label" for="origem-input">Origem</label>
-        <div class="input-search-wrap mb-3">
-          <i class="bi bi-geo-alt input-icon"></i>
-          <input id="origem-input" type="text" class="input-search" placeholder="Escreva o ponto de partida" autocomplete="off" />
-        </div>
-        <label class="form-label" for="destino-input">Destino</label>
-        <div class="input-search-wrap mb-3">
-          <i class="bi bi-flag input-icon"></i>
-          <input id="destino-input" type="text" class="input-search" placeholder="Escreva o destino" autocomplete="off" />
-        </div>
-        <div id="autocomplete-list" class="autocomplete-list hidden"></div>
-        <button id="plan-route" class="btn-primary-app w-100 mb-3">Calcular Rota</button>
-        <button id="save-flight" class="btn-primary-app w-100 btn-secondary">Guardar Plano</button>
-      </div>
-
-      <div class="route-summary-card mb-4">
-        <div class="d-flex justify-content-between align-items-center mb-2">
-          <div>
-            <h2 class="title2">Resumo</h2>
-            <p class="text-secondary-custom">Rota e score de segurança</p>
-          </div>
-        </div>
-        <div class="route-summary-values">
-          <div><strong>Distância</strong><span id="route-distance">—</span></div>
-          <div><strong>Duração</strong><span id="route-duration">—</span></div>
-          <div><strong>Segurança</strong><span id="route-score">—</span></div>
-        </div>
-        <p id="route-detail" class="route-detail">Digite origem e destino para iniciar.</p>
-      </div>
-
-      <div class="weather-overview d-flex gap-2 mb-4">
-=======
       <div class="model-toolbar mb-3">
         <label class="model-label" for="drone-model-select">Modelo do drone</label>
         <select id="drone-model-select" class="form-select form-select-sm model-select">
@@ -249,7 +209,6 @@
 
       <!-- Weather Cards -->
       <div class="weather-grid mb-4">
->>>>>>> 75179abc3c8c33f0580e0897a26dc83bb3e1f551
         <div class="weather-card flex-fill">
           <i class="bi bi-wind weather-icon"></i>
           <div id="weather-wind-value" class="weather-value">12</div>
@@ -266,8 +225,6 @@
           <div id="weather-visibility-unit" class="weather-unit">km vis.</div>
         </div>
       </div>
-<<<<<<< HEAD
-=======
 
       <!-- Circular Gauge -->
       <div class="gauge-wrap mb-4">
@@ -325,7 +282,6 @@
         <div class="content-note-title">Nota operacional</div>
         <p class="content-note-text mb-0">Confirme score, rajadas e autonomia antes da descolagem.</p>
       </div>
->>>>>>> 75179abc3c8c33f0580e0897a26dc83bb3e1f551
     </div>
   </div>
 
@@ -337,11 +293,8 @@
     <!-- Fullscreen Map Area -->
     <div class="map-fullscreen" style="position:relative">
       <div class="map-grid"></div>
-<<<<<<< HEAD
-=======
 
       <!-- SVG route + drone -->
->>>>>>> 75179abc3c8c33f0580e0897a26dc83bb3e1f551
       <svg viewBox="0 0 600 320" preserveAspectRatio="none" style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none">
         <path d="M 80 270 Q 270 170, 520 60" stroke="#00D1FF" stroke-width="4" fill="none" stroke-linecap="round"/>
         <circle cx="270" cy="170" r="12" fill="#00D1FF"/>
@@ -351,13 +304,9 @@
         <i class="bi bi-wind" style="color:#007AFF;font-size:18px"></i>
         <span id="voo-wind-overlay" class="fw-semibold ms-1">14 km/h</span>
       </div>
-<<<<<<< HEAD
-      <div class="alert-banner">
-=======
 
       <!-- Alert Banner -->
       <div id="flight-alert-banner" class="alert-banner">
->>>>>>> 75179abc3c8c33f0580e0897a26dc83bb3e1f551
         <i class="bi bi-exclamation-triangle-fill me-2"></i>
         Vento lateral forte — reduzir para 22 km/h
       </div>
@@ -378,23 +327,6 @@
           <span>Regresso base</span>
         </button>
       </div>
-<<<<<<< HEAD
-      <div class="telemetry-panel mb-4">
-        <div>
-          <strong>Temperatura</strong>
-          <div id="telemetry-temperature">—</div>
-        </div>
-        <div>
-          <strong>Vento</strong>
-          <div id="telemetry-wind">—</div>
-        </div>
-        <div>
-          <strong>Risco</strong>
-          <div id="telemetry-alert">Sem alertas</div>
-        </div>
-      </div>
-      <button id="refresh-telemetry" class="btn-primary-app w-100">Atualizar Telemetria</button>
-=======
 
       <div class="instrument-grid mb-4">
         <article id="instrument-wind" class="instrument-card status-normal">
@@ -434,7 +366,6 @@
           <p id="instrument-alert-hint" class="instrument-hint">Manter observacao do vento cruzado.</p>
         </article>
       </div>
->>>>>>> 75179abc3c8c33f0580e0897a26dc83bb3e1f551
     </div>
 
     <div class="bottom-panel">
