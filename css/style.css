@@ -722,12 +722,10 @@ table {
   width: auto;
   line-height: 1;
   font-size: 20px;
-  font-family: "bootstrap-icons" !important;
-  font-style: normal !important;
-  font-weight: normal !important;
+  font-style: normal;
+  font-weight: normal;
   speak: none;
   text-transform: none;
-  line-height: 1;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
